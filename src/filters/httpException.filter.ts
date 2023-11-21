@@ -18,7 +18,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const exceptionOptions: HttpExceptionOptions = (exception as any).options;
 
     response.status(status).json({
-      msg: exceptionResponse,
+      data: exceptionResponse,
       description: exceptionOptions.description || '',
       statusCode: status,
       timestamp: new Date().toISOString(),
