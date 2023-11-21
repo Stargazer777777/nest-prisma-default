@@ -1,0 +1,8 @@
+server:
+  host: 150.158.18.90
+  port: 30006
+
+JWT:
+  secret: e34r34r34f3d1d1#$@#E@#ED
+
+locationRadius: 50
