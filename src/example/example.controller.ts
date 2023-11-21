@@ -15,6 +15,7 @@ import { CreateExampleDto } from './dto/create-example.dto';
 import { UpdateExampleDto } from './dto/update-example.dto';
 import { Message } from '@/decorators/responseMessage.decorator';
 import { Auth } from '@/decorators/auth.decorator';
+import { TokenPayload } from '@/decorators/tokenPayload.decorator';
 
 @Controller('example')
 export class ExampleController {
@@ -23,13 +24,15 @@ export class ExampleController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @Message('创建成功')
-  @Auth(RoleEnum.common)
   create(@Body() createExampleDto: CreateExampleDto) {
     return this.exampleService.create(createExampleDto);
   }
 
   @Get()
-  findAll() {
+  @Auth(RoleEnum.common)
+  findAll(@TokenPayload() tokenPayload) {
+    console.log(tokenPayload);
+
     return this.exampleService.findAll();
   }
 

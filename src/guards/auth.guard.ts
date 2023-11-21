@@ -1,31 +1,57 @@
 import { RoleEnum, Roles } from '@/decorators/role.decorator';
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { ITokenPayload } from '@/typing/auth';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { Observable } from 'rxjs';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {} // 注入Reflector
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {} // 注入Reflector
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const roles = this.reflector.get<Array<RoleEnum>>(
       Roles,
       context.getHandler(),
     ); // 从meta中获取角色信息
 
     const ctx = context.switchToHttp();
+    const request = ctx.getRequest<
+      Request & { tokenPayload?: ITokenPayload }
+    >();
+    const token = this.extractTokenFromHeader(request);
+    if (!token) {
+      throw new UnauthorizedException();
+    }
 
-    // const req = ctx.getRequest<Request & { auth?: JwtData }>();
-
-    // 检查用户角色是否具有访问权限
-    // if (roles.includes(Role[req.auth.userRole])) return true;
-
-    // 如果没有权限或权限不足，则抛出自定义的HTTP异常
-    // throw new MyHttpException(401, '没有权限或权限不足');
+    const jwtConfig = this.configService.get('JWT');
+    try {
+      const payload: ITokenPayload = await this.jwtService.verifyAsync(token, {
+        secret: jwtConfig['secret'],
+      });
+      request.tokenPayload = payload;
+      if (!roles.includes(payload.role)) {
+        throw new UnauthorizedException();
+      }
+    } catch {
+      throw new UnauthorizedException();
+    }
 
     return true;
+  }
+
+  private extractTokenFromHeader(request: Request): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
   }
 }
