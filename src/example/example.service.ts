@@ -1,26 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { CreateExampleDto } from './dto/create-example.dto';
 import { UpdateExampleDto } from './dto/update-example.dto';
+import { DBClientService } from '@/dbClient/dbClient.service';
 
 @Injectable()
 export class ExampleService {
-  create(createExampleDto: CreateExampleDto) {
-    return 'This action adds a new example';
+  constructor(private readonly dbClientService: DBClientService) {}
+
+  db = this.dbClientService.prisma;
+
+  async create(createExampleDto: CreateExampleDto) {
+    return await this.db.example.create({
+      data: { name: createExampleDto.name },
+    });
   }
 
-  findAll() {
-    return `This action returns all example`;
+  async findAll() {
+    return await this.db.example.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} example`;
+  async findOne(id: string) {
+    return await this.db.example.findFirst({
+      where: { id },
+    });
   }
 
-  update(id: number, updateExampleDto: UpdateExampleDto) {
-    return `This action updates a #${id} example`;
+  async update(id: string, updateExampleDto: UpdateExampleDto) {
+    return await this.db.example.update({
+      data: { name: updateExampleDto.name },
+      where: { id },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} example`;
+  async remove(id: string) {
+    return await this.db.example.delete({ where: { id } });
   }
 }

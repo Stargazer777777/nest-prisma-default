@@ -16,6 +16,7 @@ import { UpdateExampleDto } from './dto/update-example.dto';
 import { Message } from '@/decorators/responseMessage.decorator';
 import { Auth } from '@/decorators/auth.decorator';
 import { TokenPayload } from '@/decorators/tokenPayload.decorator';
+import { ITokenPayload } from '@/typing/auth';
 
 @Controller('example')
 export class ExampleController {
@@ -29,25 +30,24 @@ export class ExampleController {
   }
 
   @Get()
-  @Auth(RoleEnum.common)
-  findAll(@TokenPayload() tokenPayload) {
-    console.log(tokenPayload);
-
+  findAll() {
     return this.exampleService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.exampleService.findOne(+id);
+    return this.exampleService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateExampleDto: UpdateExampleDto) {
-    return this.exampleService.update(+id, updateExampleDto);
+    return this.exampleService.update(id, updateExampleDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.exampleService.remove(+id);
+  @Auth(RoleEnum.common)
+  remove(@Param('id') id: string, @TokenPayload() tokenPayload: ITokenPayload) {
+    console.log(tokenPayload);
+    return this.exampleService.remove(id);
   }
 }

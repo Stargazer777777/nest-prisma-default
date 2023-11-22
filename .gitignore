@@ -36,3 +36,4 @@ lerna-debug.log*
 
 # env
 application.prod.yml
+prisma/.env

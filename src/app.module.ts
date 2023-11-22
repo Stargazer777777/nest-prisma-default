@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import getConfig from './config/configuration';
 import { JwtModule } from '@nestjs/jwt';
+import { DBClientModule } from './dbClient/dbClient.module';
 
 const config = getConfig();
 const JwtConfig = config['JWT'];
@@ -18,6 +19,7 @@ const JwtConfig = config['JWT'];
       secret: JwtConfig['secret'],
       signOptions: { expiresIn: JwtConfig['expiresIn'] },
     }),
+    DBClientModule,
     ExampleModule,
     AuthModule,
   ],
