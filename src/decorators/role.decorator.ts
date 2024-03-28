@@ -1,8 +1,4 @@
 import { Reflector } from '@nestjs/core';
+import { $Enums } from '@prisma/client';
 
-export enum RoleEnum {
-  common,
-  admin,
-}
-
-export const Roles = Reflector.createDecorator<RoleEnum[]>();
+export const Roles = Reflector.createDecorator<$Enums.user_role[]>();

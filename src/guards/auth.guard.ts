@@ -1,4 +1,5 @@
-import { RoleEnum, Roles } from '@/decorators/role.decorator';
+import { $Enums } from '@prisma/client';
+import { Roles } from '@/decorators/role.decorator';
 import { ITokenPayload } from '@/typing/auth';
 import {
   CanActivate,
@@ -20,7 +21,7 @@ export class AuthGuard implements CanActivate {
   ) {} // 注入Reflector
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const roles = this.reflector.get<Array<RoleEnum>>(
+    const roles = this.reflector.get<Array<$Enums.user_role>>(
       Roles,
       context.getHandler(),
     ); // 从meta中获取角色信息

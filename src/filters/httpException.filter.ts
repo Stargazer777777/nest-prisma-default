@@ -17,9 +17,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const exceptionResponse = exception.getResponse();
     const exceptionOptions: HttpExceptionOptions =
       (exception as any).options || {};
+    let msg = 'unknown';
+    if (typeof exceptionResponse === 'string') {
+      msg = exceptionResponse;
+    } else if (typeof exceptionResponse === 'object') {
+      msg = (exceptionResponse as any).message || 'unknown';
+    }
 
     response.status(status).json({
       data: exceptionResponse,
+      msg,
+      success: false,
       description: exceptionOptions.description || '',
       statusCode: status,
       timestamp: new Date().toISOString(),

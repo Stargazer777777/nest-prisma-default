@@ -1,7 +1,6 @@
-import { RoleEnum } from '@/decorators/role.decorator';
+import { $Enums } from '@prisma/client';
 
 export interface ITokenPayload {
   id: string;
-  name: string;
-  role: RoleEnum;
+  role: $Enums.user_role;
 }

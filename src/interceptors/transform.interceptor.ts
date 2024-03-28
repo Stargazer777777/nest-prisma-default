@@ -28,6 +28,8 @@ export class TransformInterceptor<T>
     const message =
       this.reflector.get<string | undefined>(Message, context.getHandler()) ||
       'success';
-    return observable.pipe(map((data) => ({ data, msg: message })));
+    return observable.pipe(
+      map((data) => ({ data, msg: message, success: true })),
+    );
   }
 }

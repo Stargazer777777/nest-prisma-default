@@ -7,9 +7,12 @@ import { AuthModule } from './auth/auth.module';
 import getConfig from './config/configuration';
 import { JwtModule } from '@nestjs/jwt';
 import { DBClientModule } from './dbClient/dbClient.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 const config = getConfig();
 const JwtConfig = config['JWT'];
+const projectRootPath = config['ProjectRootPath'];
 
 @Module({
   imports: [
@@ -18,6 +21,10 @@ const JwtConfig = config['JWT'];
       global: true,
       secret: JwtConfig['secret'],
       signOptions: { expiresIn: JwtConfig['expiresIn'] },
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(projectRootPath, 'uploaded_files'),
+      serveRoot: '/uploaded_files',
     }),
     DBClientModule,
     ExampleModule,

@@ -1,8 +1,23 @@
 server:
-  host: 127.0.0.1
+  host: 0.0.0.0
   port: 3000
 
 JWT:
-  secret: e34r34r34f3d1d1#$@#E@#ED
+  secret: 88888888
   expiresIn: 12h
 
+EmailServer:
+  host: smtp.qq.com
+  port: 587
+  secure: false
+  auth:
+    user: 1809456119@qq.com
+    pass: xxx
+
+EmailCode:
+  expiresSeconds: 300
+  limitSeconds: 60
+  detectionSeconds: 1
+
+Static:
+  filePrefix: http://127.0.0.1:3000/uploaded_files/

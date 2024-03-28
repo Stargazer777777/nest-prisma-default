@@ -16,6 +16,9 @@ export const getConfig = () => {
   const yamlPath = path.join(process.cwd(), `./application.${environment}.yml`); // 根据当前运行环境拼接yaml文件路径
   const file = fs.readFileSync(yamlPath, 'utf8'); // 同步读取yaml文件内容
   const config = parse(file); // 解析yaml文件内容为对象
+
+  const projectRootPath = path.join(__dirname, '../../');
+  config['ProjectRootPath'] = projectRootPath;
   return config; // 返回解析后的配置对象
 };
 

@@ -1,7 +1,9 @@
+import { $Enums } from '@prisma/client';
 import { AuthGuard } from '@/guards/auth.guard';
 import { UseGuards, applyDecorators } from '@nestjs/common';
-import { RoleEnum, Roles } from './role.decorator';
+import { Roles } from './role.decorator';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
-export function Auth(...roles: RoleEnum[]) {
-  return applyDecorators(Roles(roles), UseGuards(AuthGuard));
+export function Auth(...roles: $Enums.user_role[]) {
+  return applyDecorators(Roles(roles), UseGuards(AuthGuard), ApiBearerAuth());
 }
