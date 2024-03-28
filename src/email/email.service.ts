@@ -72,7 +72,7 @@ export class EmailService {
     console.log(this.verifyCodeRecord);
     return await this.sendEmail({
       to: email,
-      subject: '请注意查收基因预测平台的验证码',
+      subject: '请注意查收xx平台的验证码',
       text: `您的验证码为[${code}]，有效期为${Math.floor(
         this.emailCodeConfig['expiresSeconds'] / 60,
       )}分钟，请注意不要泄露！`,

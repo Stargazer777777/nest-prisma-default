@@ -5,6 +5,8 @@ import { HttpException, ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from '@/filters/httpException.filter';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cors from 'cors';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -14,6 +16,8 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   const serverConfig = configService.get('server');
+
+  app.use(cors());
 
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
 
@@ -36,6 +40,15 @@ async function bootstrap() {
       },
     }),
   );
+
+  const swaggerOptions = new DocumentBuilder()
+    .setTitle('xxx')
+    .setDescription('xxx接口文档')
+    .setVersion('1')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, swaggerOptions);
+  SwaggerModule.setup('/api-docs', app, document);
 
   await app.listen(serverConfig.port);
 }
